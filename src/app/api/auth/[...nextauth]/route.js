@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import prisma from "@/lib/prisma"
 import { compare } from "bcryptjs"
 
+export const dynamic = 'force-dynamic'
+
 export const authOptions = {
     session: {
         strategy: "jwt",
