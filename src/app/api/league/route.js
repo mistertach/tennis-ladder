@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import prisma from "@/lib/prisma"
 
+export const dynamic = 'force-dynamic'
+
 // Helper to shuffle array
 const shuffle = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
