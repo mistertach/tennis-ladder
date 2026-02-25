@@ -1,0 +1,166 @@
+/* Styles extracted from sampletennis.html */
+
+.group {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 1em;
+    padding: 1em;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 0.5em auto;
+    /* Centered */
+    cursor: default;
+    /* Changed from pointer as we aren't opening a modal for the whole card */
+    box-shadow: none;
+    /* Explicitly remove shadow */
+    border: none;
+}
+
+.groupHead {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 0.2em;
+    color: black;
+}
+
+.dayNcourt {
+    font-size: 0.9em;
+    color: blue;
+    margin-bottom: 1em;
+    font-weight: bold;
+}
+
+/* Table-like structure for players */
+.playerTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.playerRow {
+    border-bottom: 1px solid lightgray;
+}
+
+.playerRow:last-child {
+    border-bottom: none;
+}
+
+.rankCell {
+    width: 30px;
+    font-weight: bold;
+    color: black;
+    text-align: left;
+    vertical-align: middle;
+    padding: 8px 0;
+}
+
+.nameCell {
+    text-align: left;
+    font-weight: bold;
+    color: black;
+    vertical-align: middle;
+    padding: 8px 0;
+}
+
+.scoreCell {
+    text-align: right;
+    vertical-align: middle;
+    padding: 8px 0;
+}
+
+/* Status Indicators */
+.mv {
+    font-weight: bolder;
+    margin-left: 0.5em;
+    display: inline-block;
+}
+
+.UP {
+    color: green;
+}
+
+.DOWN {
+    color: red;
+}
+
+.STAY {
+    color: lightgray;
+}
+
+/* Sub Styling */
+.subLabel {
+    font-size: 0.8em;
+    color: red;
+    /* Matching sample .subName color */
+    margin-left: 0.5em;
+    font-weight: normal;
+}
+
+.subNeeded {
+    color: red;
+    font-size: 0.8em;
+    font-style: italic;
+}
+
+/* Input Styling */
+.reportButton {
+    background-color: green;
+    color: white;
+    border-radius: 6px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-top: 1em;
+    width: 100%;
+    /* Or auto? Sample uses inline-block min-width 150px. Let's do full width for mobile ease */
+}
+
+.scoreInput {
+    width: 60px;
+    text-align: center;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    padding: 2px;
+    font-weight: bold;
+}
+
+/* Edit Mode Container */
+.editContainer {
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px dashed lightgray;
+}
+
+.editRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.subInputGroup {
+    display: flex;
+    gap: 5px;
+    margin-top: 2px;
+}
+
+.subTextInput {
+    border: 1px solid lightgray;
+    border-radius: 3px;
+    padding: 2px;
+    font-size: 0.8em;
+    width: 100px;
+}
+
+.courtInput {
+    width: 60px;
+    padding: 2px 4px;
+    font-size: 0.9em;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+    color: blue;
+}

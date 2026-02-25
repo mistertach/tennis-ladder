@@ -1,0 +1,239 @@
+.container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.title {
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.row {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.input,
+.select,
+.textarea {
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.error {
+    background: #fee2e2;
+    color: #ef4444;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    border: 1px solid #fecaca;
+}
+
+.sectionTitle {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.playerManager {
+    background: var(--card-bg);
+    /* Or a slightly different shade */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.searchContainer {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.searchResults {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.searchResultItem {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.searchResultItem:hover,
+.searchResultItem.active {
+    /** Added active class for keyboard nav if implemented */
+    background: var(--hover-color, #f3f4f6);
+    /* Fallback */
+}
+
+/* Dark mode adjust for hover */
+@media (prefers-color-scheme: dark) {
+    .searchResultItem:hover {
+        background: #333;
+    }
+}
+
+.addPlayerForm {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background: var(--background);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px dashed var(--border-color);
+}
+
+.playerList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.playerCard {
+    display: flex;
+    align-items: center;
+    background: var(--background);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    justify-content: space-between;
+}
+
+.playerInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.playerRank {
+    font-weight: bold;
+    color: var(--secondary-color);
+    width: 24px;
+    text-align: center;
+}
+
+.playerName {
+    font-weight: 500;
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 99px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge.beginner {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge.improver {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge.intermediate {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge.advanced {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.actionBtn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+}
+
+.actionBtn:hover {
+    background: var(--hover-color, #eee);
+    color: var(--text-color);
+}
+
+.removeBtn {
+    color: #ef4444;
+    border-color: #fee2e2;
+}
+
+.removeBtn:hover {
+    background: #fee2e2;
+}
+
+.submit {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submit:hover {
+    filter: brightness(110%);
+}
+
+.submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

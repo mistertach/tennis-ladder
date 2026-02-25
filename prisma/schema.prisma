@@ -3,11 +3,11 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -33,27 +33,68 @@ enum SubStatus {
   REJECTED
 }
 
+enum Level {
+  BEGINNER
+  IMPROVER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Handedness {
+  RIGHT
+  LEFT
+  AMBIDEXTROUS
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  role      Role     @default(PLAYER)
-  image     String?  // Avatar URL
+  id         String      @id @default(cuid())
+  email      String?     @unique
+  password   String?     // Hashed password (optional for public players)
+  name       String?
+  role       Role        @default(PLAYER)
+  level      Level       @default(BEGINNER)
+  image      String?     // Avatar URL
+  nationality String?    // Country code or flag emoji
+  handedness Handedness? // Right, Left, or Ambidextrous
+  gender     Gender?
+  isDtaBoardMember Boolean @default(false)
+  dtaJoinedDate    DateTime?
+  dtaExpiryDate    DateTime?
+  badgeNumber      String?
+  isDependent      Boolean @default(false)
+  primaryMemberId  String?
   
+  primaryMember    User?   @relation("Dependents", fields: [primaryMemberId], references: [id])
+  dependents       User[]  @relation("Dependents")
+
   groups               GroupMember[]
   matchesAsPlayer1     Match[]       @relation("Player1")
   matchesAsPlayer2     Match[]       @relation("Player2")
   substitutionRequests SubstitutionRequest[]
+  weeklyScores         WeeklyScore[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+}
+
+enum LeagueType {
+  SINGLES
+  DOUBLES
 }
 
 model League {
   id            String       @id @default(cuid())
   title         String
+  type          LeagueType   @default(SINGLES) // New field
   startDate     DateTime
   durationWeeks Int
+  currentWeek   Int          @default(1)
   status        LeagueStatus @default(DRAFT)
   gamesPerMatch Int          @default(3)
   promotionCriteria String?  @db.Text
@@ -68,10 +109,14 @@ model Group {
   id        String   @id @default(cuid())
   leagueId  String
   tier      Int      // Level 1, 2, 3...
-  league    League   @relation(fields: [leagueId], references: [id])
+  court     String?  // e.g. "2 & 3"
+  time      String?  // e.g. "5pm"
+  day       String?  // e.g. "Monday"
+  league    League   @relation(fields: [leagueId], references: [id], onDelete: Cascade) // Add Cascade delete for League deletion
   
   members   GroupMember[]
   matches   Match[]
+  weeklyScores WeeklyScore[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -82,17 +127,23 @@ model GroupMember {
   userId    String
   groupId   String
   user      User     @relation(fields: [userId], references: [id])
-  group     Group    @relation(fields: [groupId], references: [id])
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
   
-  points    Int      @default(0)
+  points          Int      @default(0)
+  matchesPlayed   Int      @default(0)
+  matchesWon      Int      @default(0)
+  matchesLost     Int      @default(0)
   
-  @@unique([userId, groupId])
+  week            Int      @default(1) // New: track history
+  rank            Int      @default(0) // New: Explicit seeding rank for this week
+
+  @@unique([userId, groupId, week])
 }
 
 model Match {
   id        String      @id @default(cuid())
   groupId   String
-  group     Group       @relation(fields: [groupId], references: [id])
+  group     Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
   
   player1Id String
   player2Id String
@@ -103,6 +154,7 @@ model Match {
   scorePlayer2 Int?
   winnerId     String? 
   
+  round     Int         @default(1) // Week number
   date      DateTime?
   status    MatchStatus @default(SCHEDULED)
 
@@ -115,7 +167,7 @@ model Match {
 model SubstitutionRequest {
   id        String    @id @default(cuid())
   matchId   String
-  match     Match     @relation(fields: [matchId], references: [id])
+  match     Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
   
   requesterId String
   requester   User      @relation(fields: [requesterId], references: [id])
@@ -124,4 +176,26 @@ model SubstitutionRequest {
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model WeeklyScore {
+  id        String   @id @default(cuid())
+  
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  
+  week      Int
+  gamesWon  Int?     // Null = not played, 0 = played and lost
+  subNeeded Boolean  @default(false)
+  subName   String?  // New: Name of sub
+  subContact String? // New: Contact info (phone/email)
+  noShow    Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([groupId, userId, week])
 }
