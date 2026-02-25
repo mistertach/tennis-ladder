@@ -60,32 +60,30 @@ export default function GroupCard({ group, week, scores, totalTiers, gamesPerMat
             </div>
 
             <div className={styles.dayNcourt}>
-                {group.day && <span style={{ marginRight: '10px' }}>{group.day}</span>}
-                {group.time && <span style={{ marginRight: '10px', fontWeight: 'bold' }}>{group.time}</span>}
-                {group.court && <span>Court {group.court}</span>}
+                {group.day && <span className={styles.tag}>{group.day}</span>}
+                {group.time && <span className={styles.tagHighlight}>{group.time}</span>}
+                {group.court && <span className={styles.tag}>Court {group.court}</span>}
             </div>
 
-            <table className={styles.playerTable}>
-                <tbody>
-                    {rankedMembers.map((member, index) => {
-                        const score = localScores.find(s => s.userId === member.userId)
-                        return (
-                            <PlayerRow
-                                key={member.userId}
-                                member={member}
-                                score={score}
-                                week={week}
-                                groupId={group.id}
-                                isEditing={isEditing}
-                                onUpdate={handleScoreUpdate}
-                                showArrows={isGroupComplete}
-                                maxPossibleScore={maxPossibleScore}
-                                displayRank={startingRank + member.rank}
-                            />
-                        )
-                    })}
-                </tbody>
-            </table>
+            <div className={styles.playerList}>
+                {rankedMembers.map((member, index) => {
+                    const score = localScores.find(s => s.userId === member.userId)
+                    return (
+                        <PlayerRow
+                            key={member.userId}
+                            member={member}
+                            score={score}
+                            week={week}
+                            groupId={group.id}
+                            isEditing={isEditing}
+                            onUpdate={handleScoreUpdate}
+                            showArrows={isGroupComplete}
+                            maxPossibleScore={maxPossibleScore}
+                            displayRank={startingRank + member.rank}
+                        />
+                    )
+                })}
+            </div>
 
             <button
                 className={styles.reportButton}
@@ -160,41 +158,48 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
 
     const scoreOptions = Array.from({ length: (maxPossibleScore || 21) + 1 }, (_, i) => i)
 
+    const getInitials = (name) => {
+        if (!name) return '?'
+        return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+    }
+
     return (
-        <tr className={styles.playerRow}>
-            <td className={styles.rankCell}>{displayRank}.</td>
-            <td className={styles.nameCell}>
-                {member.nationality && <span style={{ marginRight: '6px' }}>{member.nationality}</span>}
-                {member.name}
+        <div className={styles.playerRow}>
+            <div className={styles.rankCell}>{displayRank}.</div>
+            <div className={styles.avatar}>
+                {getInitials(member.name)}
+            </div>
+
+            <div className={styles.nameCell}>
+                <span className={styles.playerName}>
+                    {member.nationality && <span style={{ marginRight: '6px' }}>{member.nationality}</span>}
+                    {member.name}
+                </span>
+
                 {member.handedness && (
-                    <span style={{
-                        fontSize: '0.7em',
-                        color: '#7f8c8d',
-                        marginLeft: '4px',
-                        verticalAlign: 'super'
-                    }}>
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
                         ({member.handedness === 'RIGHT' ? 'R' : member.handedness === 'LEFT' ? 'L' : 'A'})
                     </span>
                 )}
 
-                {/* Status Indicator */}
+                {/* Status Indicator Badge */}
                 {showArrows && (
-                    <span className={`${styles.mv} ${styles[member.status]}`}>
-                        {member.status === 'UP' && '↑'}
-                        {member.status === 'DOWN' && '↓'}
-                        {member.status === 'STAY' && '•'}
+                    <span className={`${styles.badge} ${styles['status' + member.status]}`}>
+                        {member.status === 'UP' && '↑ UP'}
+                        {member.status === 'DOWN' && '↓ DOWN'}
+                        {member.status === 'STAY' && '- STAY'}
                     </span>
                 )}
 
                 {/* Sub Info Display (Read Only) */}
                 {subNeeded && !isEditing && (
                     <span className={styles.subNeeded}>
-                        {subName ? ` (Sub: ${subName})` : ' (Sub needed)'}
+                        {subName ? `Sub: ${subName}` : 'Sub needed'}
                     </span>
                 )}
                 {noShow && !isEditing && (
-                    <span className={styles.subNeeded} style={{ color: 'red', marginLeft: '5px' }}>
-                        (No Show)
+                    <span className={styles.subNeeded}>
+                        No Show
                     </span>
                 )}
 
@@ -243,15 +248,15 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
                         )}
                     </div>
                 )}
-            </td>
-            <td className={styles.scoreCell}>
+            </div>
+
+            <div className={styles.scoreCell}>
                 {isEditing ? (
                     <select
                         className={styles.scoreInput}
                         value={gamesWon ?? ''}
                         onChange={handleScoreChange}
                         disabled={noShow}
-                        style={{ padding: '0 5px' }}
                     >
                         <option value="">-</option>
                         {scoreOptions.map(val => (
@@ -259,11 +264,11 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
                         ))}
                     </select>
                 ) : (
-                    <span style={{ fontWeight: 'bold' }}>
+                    <span>
                         {noShow ? 'NS' : (gamesWon !== null ? gamesWon : '-')}
                     </span>
                 )}
-            </td>
-        </tr>
+            </div>
+        </div>
     )
 }

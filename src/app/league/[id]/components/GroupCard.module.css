@@ -1,166 +1,210 @@
-/* Styles extracted from sampletennis.html */
-
 .group {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 1em;
-    padding: 1em;
-    background-color: whitesmoke;
-    border-radius: 10px;
-    max-width: 500px;
-    margin: 0.5em auto;
-    /* Centered */
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    margin: 0 auto 1.5rem;
     cursor: default;
-    /* Changed from pointer as we aren't opening a modal for the whole card */
-    box-shadow: none;
-    /* Explicitly remove shadow */
-    border: none;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
 }
 
 .groupHead {
-    font-weight: bold;
-    font-size: 1.1em;
-    margin-bottom: 0.2em;
-    color: black;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e3a8a;
+    /* Deep professional blue */
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .dayNcourt {
-    font-size: 0.9em;
-    color: blue;
-    margin-bottom: 1em;
-    font-weight: bold;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
 }
 
-/* Table-like structure for players */
-.playerTable {
-    width: 100%;
-    border-collapse: collapse;
+.tag {
+    background-color: #f1f5f9;
+    color: #475569;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-weight: 500;
+}
+
+.tagHighlight {
+    background-color: #e0e7ff;
+    color: #4338ca;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    font-weight: 600;
+}
+
+/* Flex-based layout for players instead of table */
+.playerList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .playerRow {
-    border-bottom: 1px solid lightgray;
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    transition: background-color 0.2s;
 }
 
-.playerRow:last-child {
-    border-bottom: none;
+.playerRow:hover {
+    background-color: #f1f5f9;
 }
 
 .rankCell {
-    width: 30px;
-    font-weight: bold;
-    color: black;
-    text-align: left;
-    vertical-align: middle;
-    padding: 8px 0;
+    width: 28px;
+    font-weight: 700;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
 }
 
 .nameCell {
-    text-align: left;
-    font-weight: bold;
-    color: black;
-    vertical-align: middle;
-    padding: 8px 0;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.playerName {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 1rem;
 }
 
 .scoreCell {
-    text-align: right;
-    vertical-align: middle;
-    padding: 8px 0;
+    margin-left: auto;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #0f172a;
+    min-width: 40px;
+    text-align: center;
 }
 
 /* Status Indicators */
-.mv {
-    font-weight: bolder;
-    margin-left: 0.5em;
-    display: inline-block;
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    letter-spacing: 0.05em;
 }
 
-.UP {
-    color: green;
+.statusUP {
+    background-color: #d1fae5;
+    color: #059669;
 }
 
-.DOWN {
-    color: red;
+.statusDOWN {
+    background-color: #fee2e2;
+    color: #dc2626;
 }
 
-.STAY {
-    color: lightgray;
+.statusSTAY {
+    background-color: #f1f5f9;
+    color: #64748b;
 }
 
 /* Sub Styling */
-.subLabel {
-    font-size: 0.8em;
-    color: red;
-    /* Matching sample .subName color */
-    margin-left: 0.5em;
-    font-weight: normal;
-}
-
 .subNeeded {
-    color: red;
-    font-size: 0.8em;
-    font-style: italic;
+    font-size: 0.75rem;
+    color: #e11d48;
+    background-color: #ffe4e6;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
 }
 
 /* Input Styling */
 .reportButton {
-    background-color: green;
+    background-color: #10b981;
     color: white;
-    border-radius: 6px;
-    padding: 5px 10px;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
     border: none;
     cursor: pointer;
-    font-family: inherit;
-    font-weight: bold;
-    font-size: 0.9em;
-    margin-top: 1em;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 1.25rem;
     width: 100%;
-    /* Or auto? Sample uses inline-block min-width 150px. Let's do full width for mobile ease */
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.reportButton:hover {
+    background-color: #059669;
+}
+
+.reportButton:active {
+    transform: scale(0.98);
 }
 
 .scoreInput {
-    width: 60px;
+    width: 65px;
     text-align: center;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-    padding: 2px;
-    font-weight: bold;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px;
+    font-weight: 600;
+    font-size: 1rem;
+    background-color: white;
+    color: #1e293b;
 }
 
 /* Edit Mode Container */
-.editContainer {
-    margin-top: 1em;
-    padding-top: 1em;
-    border-top: 1px dashed lightgray;
-}
-
-.editRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
+.subLabel {
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 500;
 }
 
 .subInputGroup {
     display: flex;
-    gap: 5px;
-    margin-top: 2px;
+    gap: 8px;
+    margin-top: 6px;
+    width: 100%;
 }
 
 .subTextInput {
-    border: 1px solid lightgray;
-    border-radius: 3px;
-    padding: 2px;
-    font-size: 0.8em;
-    width: 100px;
-}
-
-.courtInput {
-    width: 60px;
-    padding: 2px 4px;
-    font-size: 0.9em;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
-    color: blue;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    flex: 1;
 }
