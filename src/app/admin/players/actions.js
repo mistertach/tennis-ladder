@@ -35,6 +35,7 @@ export async function createPlayer(data) {
                 badgeNumber: data.badgeNumber || null,
                 isDependent,
                 primaryMemberId,
+                profileImage: data.profileImage || null,
                 role: 'PLAYER'
             }
         })
@@ -71,6 +72,7 @@ export async function updatePlayer(userId, data) {
             badgeNumber: data.badgeNumber || null,
             isDependent,
             primaryMemberId,
+            profileImage: data.profileImage !== undefined ? data.profileImage : undefined,
         };
 
         console.log("=== UPDATING PLAYER PAYLOAD ===")

@@ -71,6 +71,7 @@ model User {
   
   primaryMember    User?   @relation("Dependents", fields: [primaryMemberId], references: [id])
   dependents       User[]  @relation("Dependents")
+  profileImage     String?
 
   groups               GroupMember[]
   matchesAsPlayer1     Match[]       @relation("Player1")

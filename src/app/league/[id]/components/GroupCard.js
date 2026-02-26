@@ -5,7 +5,7 @@ import { updateWeeklyScore, toggleSubNeeded, updateSubDetails, updateNoShow } fr
 import styles from './GroupCard.module.css'
 import { calculateGroupStandings } from '@/lib/ranking'
 
-export default function GroupCard({ group, week, scores, totalTiers, gamesPerMatch = 7, startingRank = 0 }) {
+export default function GroupCard({ group, week, scores, totalTiers, gamesPerMatch = 7, startingRank = 0, allUsers = [] }) {
     const [isEditing, setIsEditing] = useState(false)
     const [localScores, setLocalScores] = useState(scores || [])
 
@@ -80,6 +80,7 @@ export default function GroupCard({ group, week, scores, totalTiers, gamesPerMat
                             showArrows={isGroupComplete}
                             maxPossibleScore={maxPossibleScore}
                             displayRank={startingRank + member.rank}
+                            allUsers={allUsers}
                         />
                     )
                 })}
@@ -95,7 +96,7 @@ export default function GroupCard({ group, week, scores, totalTiers, gamesPerMat
     )
 }
 
-function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArrows, maxPossibleScore, displayRank }) {
+function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArrows, maxPossibleScore, displayRank, allUsers }) {
     const subNeeded = score?.subNeeded || false
     // Default to null if undefined, so we can detect "not played"
     const gamesWon = score?.gamesWon ?? null
@@ -166,13 +167,17 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
     return (
         <div className={styles.playerRow}>
             <div className={styles.rankCell}>{displayRank}.</div>
-            <div className={styles.avatar}>
-                {getInitials(member.name)}
+            <div className={styles.avatar} style={member.profileImage ? { padding: 0, overflow: 'hidden', background: 'none' } : {}}>
+                {member.profileImage ? (
+                    <img src={member.profileImage} alt={member.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                    getInitials(member.name)
+                )}
             </div>
 
             <div className={styles.nameCell}>
                 <span className={styles.playerName}>
-                    {member.nationality && <span style={{ marginRight: '6px' }}>{member.nationality}</span>}
+                    {member.nationality && <span style={{ marginRight: '6px', fontSize: '1.4rem', verticalAlign: 'middle' }}>{member.nationality}</span>}
                     {member.name}
                 </span>
 
@@ -185,9 +190,9 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
                 {/* Status Indicator Badge */}
                 {showArrows && (
                     <span className={`${styles.badge} ${styles['status' + member.status]}`}>
-                        {member.status === 'UP' && '↑ UP'}
-                        {member.status === 'DOWN' && '↓ DOWN'}
-                        {member.status === 'STAY' && '- STAY'}
+                        {member.status === 'UP' && '↑'}
+                        {member.status === 'DOWN' && '↓'}
+                        {member.status === 'STAY' && '-'}
                     </span>
                 )}
 
@@ -230,13 +235,22 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
 
                         {subNeeded && (
                             <div className={styles.subInputGroup}>
-                                <input
-                                    className={styles.subTextInput}
-                                    placeholder="Name"
-                                    value={subName}
-                                    onChange={(e) => setSubName(e.target.value)}
-                                    onBlur={handleSubInfoBlur}
-                                />
+                                <div style={{ flex: 1 }}>
+                                    <input
+                                        list="sub-options"
+                                        className={styles.subTextInput}
+                                        placeholder="Name"
+                                        value={subName}
+                                        onChange={(e) => setSubName(e.target.value)}
+                                        onBlur={handleSubInfoBlur}
+                                        style={{ width: '100%' }}
+                                    />
+                                    <datalist id="sub-options">
+                                        {allUsers.map(u => (
+                                            <option key={u.id} value={u.name} />
+                                        ))}
+                                    </datalist>
+                                </div>
                                 <input
                                     className={styles.subTextInput}
                                     placeholder="Phone"

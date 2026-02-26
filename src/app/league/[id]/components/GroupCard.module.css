@@ -208,3 +208,13 @@
     font-size: 0.85rem;
     flex: 1;
 }
+
+@media (max-width: 600px) {
+    .subInputGroup {
+        flex-direction: column;
+    }
+
+    .subTextInput {
+        width: 100%;
+    }
+}

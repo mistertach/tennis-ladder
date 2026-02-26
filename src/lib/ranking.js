@@ -10,6 +10,7 @@ export function calculateGroupStandings(members, scores, matches, tier, totalTie
             name: m.user.name,
             nationality: m.user.nationality, // Map fields from user relation
             handedness: m.user.handedness,  // Map fields from user relation
+            profileImage: m.user.profileImage, // Map fields from user relation
             originalRank: m.rank || (originalIndex + 1) // Use explicit rank from DB if available, else fallback to index
         }
     })
@@ -42,8 +43,8 @@ export function calculateGroupStandings(members, scores, matches, tier, totalTie
             }
         }
 
-        // Priority 3: Original Rank (Lower is better/higher seed)
-        return a.originalRank - b.originalRank
+        // Priority 3: Original Rank (Lower seed / higher number wins ties to reward upsets)
+        return b.originalRank - a.originalRank
     })
 
     const isTopGroup = tier === 1

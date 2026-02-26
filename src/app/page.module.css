@@ -83,7 +83,9 @@
 
 @media (max-width: 900px) {
     .contentGrid {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column-reverse;
+        /* Put active leagues at the top */
     }
 }
 

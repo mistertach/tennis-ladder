@@ -82,7 +82,8 @@ export default function PlayerList({ initialPlayers }) {
         dtaExpiryDate: '',
         badgeNumber: '',
         isDependent: false,
-        primaryMemberId: ''
+        primaryMemberId: '',
+        profileImage: ''
     })
 
     const openAddModal = () => {
@@ -94,7 +95,8 @@ export default function PlayerList({ initialPlayers }) {
             dtaExpiryDate: '2026-12-31',
             badgeNumber: '',
             isDependent: false,
-            primaryMemberId: ''
+            primaryMemberId: '',
+            profileImage: ''
         })
         setIsModalOpen(true)
     }
@@ -113,7 +115,8 @@ export default function PlayerList({ initialPlayers }) {
             dtaExpiryDate: player.dtaExpiryDate ? new Date(player.dtaExpiryDate).toISOString().split('T')[0] : '',
             badgeNumber: player.badgeNumber || '',
             isDependent: player.isDependent || false,
-            primaryMemberId: player.primaryMemberId || ''
+            primaryMemberId: player.primaryMemberId || '',
+            profileImage: player.profileImage || ''
         })
         setIsModalOpen(true)
     }
@@ -127,7 +130,8 @@ export default function PlayerList({ initialPlayers }) {
                 ...formData,
                 nationality: formData.nationality || null,
                 handedness: formData.handedness || null,
-                gender: formData.gender || null
+                gender: formData.gender || null,
+                profileImage: formData.profileImage || null
             })
             if (res.success) {
                 setPlayers(players.map(p => p.id === editingPlayer.id ? { ...p, ...res.player } : p))
@@ -137,7 +141,8 @@ export default function PlayerList({ initialPlayers }) {
                 ...formData,
                 nationality: formData.nationality || null,
                 handedness: formData.handedness || null,
-                gender: formData.gender || null
+                gender: formData.gender || null,
+                profileImage: formData.profileImage || null
             })
             if (res.success) {
                 // Approximate counts for UI
@@ -298,6 +303,10 @@ export default function PlayerList({ initialPlayers }) {
                             <div className={styles.formGroup}>
                                 <label>Email (Optional)</label>
                                 <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                            </div>
+                            <div className={styles.formGroup}>
+                                <label>Profile Image URL (Optional)</label>
+                                <input type="url" placeholder="https://..." value={formData.profileImage} onChange={e => setFormData({ ...formData, profileImage: e.target.value })} />
                             </div>
                             <div className={styles.formGroup}>
                                 <label>Level</label>

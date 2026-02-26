@@ -71,6 +71,8 @@ input,
 select,
 textarea {
     font-family: inherit;
+    font-size: 16px;
+    /* Prevents iOS auto-zoom */
 }
 
 /* Dark mode removed to force light theme per user request */

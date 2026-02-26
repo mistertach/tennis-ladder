@@ -11,7 +11,16 @@ export default async function PublicLeaguePage({ params, searchParams }) {
     const { id } = await params
     const { week } = await searchParams
 
-    const currentWeek = week ? parseInt(week) : 1
+    const baseLeague = await prisma.league.findUnique({
+        where: { id },
+        select: { currentWeek: true, durationWeeks: true, title: true, startDate: true, gamesPerMatch: true }
+    })
+
+    if (!baseLeague) {
+        notFound()
+    }
+
+    const currentWeek = week ? parseInt(week) : baseLeague.currentWeek
 
     const league = await prisma.league.findUnique({
         where: { id },
@@ -20,31 +29,27 @@ export default async function PublicLeaguePage({ params, searchParams }) {
                 include: {
                     members: {
                         where: { week: currentWeek },
-                        orderBy: { rank: 'asc' }, // Explicit seeding order
-                        include: {
-                            user: true
-                        }
+                        orderBy: { rank: 'asc' },
+                        include: { user: true }
                     },
                     matches: {
                         where: { round: currentWeek },
-                        include: {
-                            player1: true,
-                            player2: true
-                        }
+                        include: { player1: true, player2: true }
                     },
                     weeklyScores: {
                         where: { week: currentWeek },
-                        include: {
-                            user: true
-                        }
+                        include: { user: true }
                     }
                 },
-                orderBy: {
-                    tier: 'asc'
-                }
+                orderBy: { tier: 'asc' }
             }
         }
     })
+
+    // Merge base properties back to satisfy existing component logic
+    Object.assign(league, baseLeague)
+
+    const allUsers = await prisma.user.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } })
 
     if (league) {
         console.log(`[DEBUG] Page Load: League ${id}, Week ${currentWeek}`)
@@ -127,6 +132,7 @@ export default async function PublicLeaguePage({ params, searchParams }) {
                                 gamesPerMatch={league.gamesPerMatch}
                                 totalTiers={league.groups.length}
                                 startingRank={startingRank}
+                                allUsers={allUsers}
                             />
                         )
                     })

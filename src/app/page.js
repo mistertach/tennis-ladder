@@ -99,7 +99,7 @@ export default async function Home() {
                                 <li><strong>Equipment:</strong> One can of balls is provided per court (unless joining mid-season).</li>
                                 <li><strong>Substitutes:</strong> You may serve as a sub anytime for free! Subs are needed weekly on a first-come, first-served basis in the WhatsApp chat. Check the court level to ensure it fits your skill.</li>
                                 <li><strong>No-Shows & Penalties:</strong> Please be aware there are penalties for showing up late or not showing up. No-show players and subs can be removed from the league after two offenses. A no-show results in moving down a group, and a 6-game reduction.</li>
-                                <li><strong>Court Access:</strong> Aramcons (and dependents, retirees, JHAH employees with camp access) can play free from 5 a.m. to 10 p.m. Reserve courts 1, 6, 14 at the Hills and 10, 11 at 3rd street via the myCommunity app.</li>
+                                <li><strong>Court Access:</strong> Aramcons (and dependents, retirees, JHAH employees with camp access) can play free from 5 a.m. to 10 p.m. Reserve courts 1, 6, 14 at the <a href="https://maps.apple.com/?ll=26.311753,50.134706" target="_blank" style={{ textDecoration: 'underline', color: 'var(--primary-color)' }}>Hills</a> and 10, 11 at <a href="https://maps.apple.com/?ll=26.318353,50.141977" target="_blank" style={{ textDecoration: 'underline', color: 'var(--primary-color)' }}>3rd street</a> via the <a href="https://mycommunity.aramco.com" target="_blank" style={{ textDecoration: 'underline', color: 'var(--primary-color)' }}>myCommunity app</a>.</li>
                             </ul>
                         </div>
 
@@ -183,11 +183,36 @@ export default async function Home() {
                         <div className={styles.infoCard}>
                             <h3 className={styles.sectionTitle} style={{ fontSize: '1.4rem' }}>💬 Community & Coaching</h3>
                             <p style={{ marginBottom: '1rem', fontSize: '0.95rem' }}>Members gain access to a managed WhatsApp community featuring:</p>
-                            <ul className={styles.rulesList} style={{ fontSize: '0.95rem' }}>
+                            <ul className={styles.rulesList} style={{ fontSize: '0.95rem', marginBottom: '1.5rem' }}>
                                 <li><strong>League-Specific Groups</strong> for score reporting and subs.</li>
                                 <li><strong>Q&A</strong> with the Board.</li>
-                                <li><strong>Coaching Group</strong> - DTA recently contracted Coach Hassan! Join the chat to sign up for lessons.</li>
                             </ul>
+
+                            <h4 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--text-color)' }}>Professional Coaching</h4>
+                            <p style={{ fontSize: '0.95rem', marginBottom: '1rem' }}>We are excited to partner with Coach Hassan for the 2026 season! Join the WhatsApp chat to sign up for an 8-week structured program for adults and juniors.</p>
+
+                            <div style={{ background: 'rgba(0,0,0,0.03)', padding: '1rem', borderRadius: '8px', fontSize: '0.9rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+                                    <span>Program Structure (8 Weeks)</span>
+                                    <span>Price per Player</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+                                    <span>Private (1 on 1)</span>
+                                    <span>2,400 SAR</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+                                    <span>Semi-Private (2 players)</span>
+                                    <span>1,600 SAR</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+                                    <span>Group (3 players)</span>
+                                    <span>1,120 SAR</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span>Group (4 players)</span>
+                                    <span>960 SAR</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

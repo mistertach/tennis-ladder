@@ -11,7 +11,7 @@ export default function ManageLeagueClient({ league, allUsers }) {
     const [swapping, setSwapping] = useState(null) // { groupId, userId }
     const [selectedNewUser, setSelectedNewUser] = useState('')
     const [isCreatingNewPlayer, setIsCreatingNewPlayer] = useState(false)
-    const [newPlayerDetails, setNewPlayerDetails] = useState({ name: '', level: 'BEGINNER' })
+    const [newPlayerDetails, setNewPlayerDetails] = useState({ name: '', level: 'BEGINNER', profileImage: '' })
     const [editingSchedule, setEditingSchedule] = useState(null) // { groupId, day, time, court }
 
     const handleGenerateNext = async (isRainDelay) => {
@@ -82,7 +82,7 @@ export default function ManageLeagueClient({ league, allUsers }) {
             setSwapping(null)
             setSelectedNewUser('')
             setIsCreatingNewPlayer(false)
-            setNewPlayerDetails({ name: '', level: 'BEGINNER' })
+            setNewPlayerDetails({ name: '', level: 'BEGINNER', profileImage: '' })
             router.refresh()
         } catch (e) {
             console.error(e)
@@ -266,7 +266,7 @@ export default function ManageLeagueClient({ league, allUsers }) {
                                                         <button onClick={() => setIsCreatingNewPlayer(true)} style={{ fontSize: '0.8rem', background: 'none', border: '1px solid #ccc', cursor: 'pointer', padding: '0.25rem' }}>+ New Player</button>
 
                                                         <button onClick={() => handleSwap(group.id, member.userId)} style={{ background: '#10b981', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer' }}>Confirm</button>
-                                                        <button onClick={() => { setSwapping(null); setIsCreatingNewPlayer(false); setNewPlayerDetails({ name: '', level: 'BEGINNER', nationality: '', handedness: '', gender: '', isDtaBoardMember: false, dtaJoinedDate: '2025-01-01', dtaExpiryDate: '2026-12-31', badgeNumber: '', isDependent: false, primaryMemberId: '' }); }} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                                                        <button onClick={() => { setSwapping(null); setIsCreatingNewPlayer(false); setNewPlayerDetails({ name: '', level: 'BEGINNER', nationality: '', handedness: '', gender: '', isDtaBoardMember: false, dtaJoinedDate: '2025-01-01', dtaExpiryDate: '2026-12-31', badgeNumber: '', isDependent: false, primaryMemberId: '', profileImage: '' }); }} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
                                                     </div>
                                                 ) : (
                                                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -312,6 +312,10 @@ export default function ManageLeagueClient({ league, allUsers }) {
                             <div>
                                 <label style={{ display: 'block', marginBottom: '0.25rem' }}>Name</label>
                                 <input style={{ width: '100%', padding: '0.5rem' }} required value={newPlayerDetails.name} onChange={e => setNewPlayerDetails({ ...newPlayerDetails, name: e.target.value })} />
+                            </div>
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.25rem' }}>Profile Image URL (Optional)</label>
+                                <input style={{ width: '100%', padding: '0.5rem' }} type="url" placeholder="https://..." value={newPlayerDetails.profileImage || ''} onChange={e => setNewPlayerDetails({ ...newPlayerDetails, profileImage: e.target.value })} />
                             </div>
                             <div>
                                 <label style={{ display: 'block', marginBottom: '0.25rem' }}>Level</label>
