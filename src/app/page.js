@@ -34,6 +34,30 @@ export default async function Home() {
                     {/* Left Column: Community Info */}
                     <div className={styles.mainContent}>
 
+                        <div className={styles.infoCard} style={{ background: 'linear-gradient(to bottom, #f8fafc, #ffffff)', borderColor: 'var(--primary-color)' }}>
+                            <h2 className={styles.sectionTitle} style={{ fontSize: '1.75rem' }}>🟢 Active Leagues</h2>
+
+                            {activeLeagues.length > 0 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {activeLeagues.map(league => (
+                                        <Link key={league.id} href={`/league/${league.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <div className={styles.leagueItem} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--surface-color, #ffffff)', marginBottom: 0 }}>
+                                                <div className={styles.leagueName} style={{ marginBottom: 0 }}>
+                                                    <span style={{ fontSize: '1.25rem' }}>{league.title}</span>
+                                                    <span className={styles.statusIndicator} title="Active" style={{ marginLeft: '10px' }} />
+                                                </div>
+                                                <div className={styles.leagueMeta}>
+                                                    Started {new Date(league.startDate).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p style={{ color: 'var(--secondary-color)', fontStyle: 'italic' }}>There are currently no active leagues. Check back soon for the next season!</p>
+                            )}
+                        </div>
+
                         <div id="schedule" className={styles.infoCard}>
                             <h2 className={styles.sectionTitle}>📅 2026 Schedule</h2>
                             <p style={{ marginBottom: '1rem', fontStyle: 'italic', color: 'var(--secondary-color)' }}>
@@ -134,31 +158,7 @@ export default async function Home() {
 
                     {/* Right Column: Sidebar */}
                     <div>
-                        <div className={styles.leagueSidebar}>
-                            <h3 className={styles.sectionTitle} style={{ fontSize: '1.4rem' }}>🟢 Active Leagues</h3>
-
-                            {activeLeagues.length > 0 ? (
-                                <div>
-                                    {activeLeagues.map(league => (
-                                        <Link key={league.id} href={`/league/${league.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                            <div className={styles.leagueItem}>
-                                                <div className={styles.leagueName}>
-                                                    <span>{league.title}</span>
-                                                    <span className={styles.statusIndicator} title="Active" />
-                                                </div>
-                                                <div className={styles.leagueMeta}>
-                                                    Started {new Date(league.startDate).toLocaleDateString()}
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))}
-                                </div>
-                            ) : (
-                                <p style={{ color: 'var(--secondary-color)', fontStyle: 'italic' }}>There are currently no active leagues. Check back soon for the next season!</p>
-                            )}
-                        </div>
-
-                        <div className={styles.infoCard} style={{ marginTop: '2rem' }}>
+                        <div className={styles.infoCard}>
                             <h3 className={styles.sectionTitle} style={{ fontSize: '1.4rem' }}>💳 Fees & Registration</h3>
                             <p style={{ fontSize: '0.9rem', marginBottom: '1rem' }}>
                                 Membership expires at the end of the year and is renewed in January. Dues are deducted from payroll.

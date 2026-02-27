@@ -159,3 +159,20 @@ export async function bulkRenewPlayers(userIds) {
         return { success: false, error: e.message }
     }
 }
+
+export async function getAllPlayers() {
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== 'ADMIN') throw new Error("Unauthorized")
+
+    try {
+        const players = await prisma.user.findMany({
+            where: { role: 'PLAYER' },
+            select: { id: true, name: true, email: true, level: true, gender: true },
+            orderBy: { name: 'asc' }
+        })
+        return { success: true, players }
+    } catch (e) {
+        console.error("Failed to fetch all players:", e)
+        return { success: false, error: e.message }
+    }
+}

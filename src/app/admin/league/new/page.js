@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import styles from './page.module.css'
+import { getAllPlayers } from '@/app/admin/players/actions'
 
 export default function CreateLeague() {
     const router = useRouter()
@@ -22,6 +23,12 @@ export default function CreateLeague() {
 
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
+
+    // Bulk Select State
+    const [isBulkModalOpen, setIsBulkModalOpen] = useState(false)
+    const [allPlayersCache, setAllPlayersCache] = useState([])
+    const [bulkSelectedIds, setBulkSelectedIds] = useState(new Set())
+    const [bulkLoading, setBulkLoading] = useState(false)
 
     // Debounced Search
     useEffect(() => {
@@ -68,6 +75,34 @@ export default function CreateLeague() {
         const newP = [...players]
         newP.splice(index, 1)
         setPlayers(newP)
+    }
+
+    const openBulkModal = async () => {
+        setIsBulkModalOpen(true)
+        if (allPlayersCache.length === 0) {
+            setBulkLoading(true)
+            const res = await getAllPlayers()
+            if (res.success) {
+                setAllPlayersCache(res.players)
+            } else {
+                alert('Failed to load players: ' + res.error)
+            }
+            setBulkLoading(false)
+        }
+    }
+
+    const toggleBulkSelection = (id) => {
+        const newSet = new Set(bulkSelectedIds)
+        if (newSet.has(id)) newSet.delete(id)
+        else newSet.add(id)
+        setBulkSelectedIds(newSet)
+    }
+
+    const handleBulkAdd = () => {
+        const toAdd = allPlayersCache.filter(p => bulkSelectedIds.has(p.id) && !players.find(existing => existing.id === p.id))
+        setPlayers([...players, ...toAdd])
+        setIsBulkModalOpen(false)
+        setBulkSelectedIds(new Set())
     }
 
     const movePlayer = (index, direction) => {
@@ -171,11 +206,20 @@ export default function CreateLeague() {
                 </div>
 
                 <div className={styles.group}>
-                    <div className={styles.sectionTitle}>
-                        <span>Player Management ({players.length})</span>
-                        <span style={{ fontSize: '0.9rem', color: players.length % 4 === 0 ? 'green' : 'orange' }}>
-                            {players.length % 4 === 0 ? 'Valid Count' : `Need ${4 - (players.length % 4)} more`}
-                        </span>
+                    <div className={styles.sectionTitle} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <span>Player Management ({players.length})</span>
+                            <span style={{ fontSize: '0.9rem', color: players.length % 4 === 0 ? 'green' : 'orange', marginLeft: '10px' }}>
+                                {players.length % 4 === 0 ? 'Valid Count' : `Need ${4 - (players.length % 4)} more`}
+                            </span>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={openBulkModal}
+                            style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem' }}
+                        >
+                            + Bulk Select Players
+                        </button>
                     </div>
 
                     <div className={styles.playerManager}>
@@ -279,6 +323,69 @@ export default function CreateLeague() {
                     {loading ? 'Creating...' : 'Create League & Generate Groups'}
                 </button>
             </form>
+
+            {/* Bulk Selection Modal */}
+            {isBulkModalOpen && (
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div style={{ background: 'white', padding: '2rem', borderRadius: '8px', width: '90%', maxWidth: '600px', display: 'flex', flexDirection: 'column', maxHeight: '90vh' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <h2 style={{ margin: 0 }}>Bulk Add Players</h2>
+                            <button onClick={() => setIsBulkModalOpen(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer' }}>×</button>
+                        </div>
+
+                        {bulkLoading ? (
+                            <div style={{ padding: '2rem', textAlign: 'center' }}>Loading players...</div>
+                        ) : (
+                            <div style={{ flex: 1, overflowY: 'auto', border: '1px solid #e2e8f0', borderRadius: '4px', padding: '0.5rem' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead style={{ position: 'sticky', top: 0, background: 'white', zIndex: 1 }}>
+                                        <tr>
+                                            <th style={{ padding: '0.5rem', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}>Select</th>
+                                            <th style={{ padding: '0.5rem', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}>Name</th>
+                                            <th style={{ padding: '0.5rem', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}>Level</th>
+                                            <th style={{ padding: '0.5rem', textAlign: 'left', borderBottom: '2px solid #e2e8f0' }}>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {allPlayersCache.map(p => {
+                                            const isAlreadyAdded = players.some(existing => existing.id === p.id)
+                                            return (
+                                                <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9', cursor: isAlreadyAdded ? 'default' : 'pointer' }} onClick={() => !isAlreadyAdded && toggleBulkSelection(p.id)}>
+                                                    <td style={{ padding: '0.5rem' }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={bulkSelectedIds.has(p.id)}
+                                                            readOnly
+                                                            disabled={isAlreadyAdded}
+                                                        />
+                                                    </td>
+                                                    <td style={{ padding: '0.5rem', color: isAlreadyAdded ? '#94a3b8' : 'inherit' }}>{p.name} {p.gender === 'FEMALE' ? '(F)' : p.gender === 'MALE' ? '(M)' : ''}</td>
+                                                    <td style={{ padding: '0.5rem' }}>
+                                                        <span className={`${styles.badge} ${getBadgeClass(p.level)}`} style={{ opacity: isAlreadyAdded ? 0.5 : 1 }}>{p.level}</span>
+                                                    </td>
+                                                    <td style={{ padding: '0.5rem', fontSize: '0.8rem', color: isAlreadyAdded ? '#10b981' : '#94a3b8' }}>
+                                                        {isAlreadyAdded ? 'Added' : ''}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
+                            <span style={{ fontSize: '0.9rem', color: '#64748b' }}>{bulkSelectedIds.size} players selected</span>
+                            <div style={{ display: 'flex', gap: '1rem' }}>
+                                <button type="button" onClick={() => setIsBulkModalOpen(false)} style={{ padding: '0.5rem 1rem', background: '#e5e7eb', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
+                                <button type="button" onClick={handleBulkAdd} disabled={bulkSelectedIds.size === 0} style={{ padding: '0.5rem 1rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: bulkSelectedIds.size === 0 ? 'not-allowed' : 'pointer', opacity: bulkSelectedIds.size === 0 ? 0.5 : 1 }}>
+                                    Add Selected
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

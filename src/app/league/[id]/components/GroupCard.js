@@ -6,7 +6,8 @@ import styles from './GroupCard.module.css'
 import { calculateGroupStandings } from '@/lib/ranking'
 
 export default function GroupCard({ group, week, scores, totalTiers, gamesPerMatch = 7, startingRank = 0, allUsers = [] }) {
-    const [isEditing, setIsEditing] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false)
+    const [editMode, setEditMode] = useState(null) // 'SUB' or 'SCORE'
     const [localScores, setLocalScores] = useState(scores || [])
 
     const isTopGroup = group.tier === 1
@@ -49,13 +50,18 @@ export default function GroupCard({ group, week, scores, totalTiers, gamesPerMat
     const maxPossibleScore = gamesPerMatch * Math.max(0, n - 1)
 
     return (
-        <div className={styles.group}>
-            <div className={styles.groupHead}>
-                Group {group.tier}
-                {showWarning && (
-                    <span style={{ fontSize: '0.6em', color: 'orange', marginLeft: '10px' }} title={`Total games should be ${expectedTotal}`}>
-                        ⚠️ Check Totals ({totalGamesRecorded}/{expectedTotal})
-                    </span>
+        <div className={styles.group} onClick={() => !isExpanded && setIsExpanded(true)} style={{ cursor: isExpanded ? 'default' : 'pointer' }}>
+            <div className={styles.groupHead} style={{ justifyContent: 'space-between', display: 'flex' }}>
+                <div>
+                    Group {group.tier}
+                    {showWarning && (
+                        <span style={{ fontSize: '0.6em', color: 'orange', marginLeft: '10px' }} title={`Total games should be ${expectedTotal}`}>
+                            ⚠️ Check Totals ({totalGamesRecorded}/{expectedTotal})
+                        </span>
+                    )}
+                </div>
+                {isExpanded && (
+                    <button onClick={(e) => { e.stopPropagation(); setIsExpanded(false); setEditMode(null); }} style={{ background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: '#64748b' }}>×</button>
                 )}
             </div>
 
@@ -75,7 +81,7 @@ export default function GroupCard({ group, week, scores, totalTiers, gamesPerMat
                             score={score}
                             week={week}
                             groupId={group.id}
-                            isEditing={isEditing}
+                            editMode={editMode}
                             onUpdate={handleScoreUpdate}
                             showArrows={isGroupComplete}
                             maxPossibleScore={maxPossibleScore}
@@ -86,17 +92,50 @@ export default function GroupCard({ group, week, scores, totalTiers, gamesPerMat
                 })}
             </div>
 
-            <button
-                className={styles.reportButton}
-                onClick={() => setIsEditing(!isEditing)}
-            >
-                {isEditing ? 'Done' : 'Edit'}
-            </button>
+            {isExpanded && (
+                <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '1rem' }}>
+                    {editMode !== 'SCORE' && (
+                        <button
+                            className={styles.reportButton}
+                            style={{ backgroundColor: editMode === 'SUB' ? '#0f172a' : '#3b82f6', flex: 1, marginTop: 0 }}
+                            onClick={(e) => { e.stopPropagation(); setEditMode(editMode === 'SUB' ? null : 'SUB'); }}
+                        >
+                            {editMode === 'SUB' ? 'Cancel' : 'Report Sub'}
+                        </button>
+                    )}
+
+                    {editMode === 'SUB' ? (
+                        <button
+                            className={styles.reportButton}
+                            style={{ backgroundColor: '#10b981', flex: 1, marginTop: 0 }}
+                            onClick={(e) => { e.stopPropagation(); setEditMode(null); }}
+                        >
+                            Save
+                        </button>
+                    ) : editMode === 'SCORE' ? (
+                        <button
+                            className={styles.reportButton}
+                            style={{ backgroundColor: '#10b981', flex: 1, marginTop: 0 }}
+                            onClick={(e) => { e.stopPropagation(); setEditMode(null); }}
+                        >
+                            Save
+                        </button>
+                    ) : (
+                        <button
+                            className={styles.reportButton}
+                            style={{ backgroundColor: '#10b981', flex: 1, marginTop: 0 }}
+                            onClick={(e) => { e.stopPropagation(); setEditMode('SCORE'); }}
+                        >
+                            Report Scores
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     )
 }
 
-function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArrows, maxPossibleScore, displayRank, allUsers }) {
+function PlayerRow({ member, score, week, groupId, editMode, onUpdate, showArrows, maxPossibleScore, displayRank, allUsers }) {
     const subNeeded = score?.subNeeded || false
     // Default to null if undefined, so we can detect "not played"
     const gamesWon = score?.gamesWon ?? null
@@ -107,7 +146,7 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
     const [subContact, setSubContact] = useState(score?.subContact || '')
 
     const handleSubToggle = async () => {
-        if (!isEditing) return
+        if (editMode !== 'SUB') return
         const newState = !subNeeded
         onUpdate(member.userId, 'subNeeded', newState)
 
@@ -120,7 +159,7 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
     }
 
     const handleNoShowToggle = async () => {
-        if (!isEditing) return
+        if (editMode !== 'SCORE') return
         const newState = !noShow
 
         onUpdate(member.userId, 'noShow', newState)
@@ -197,45 +236,39 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
                 )}
 
                 {/* Sub Info Display (Read Only) */}
-                {subNeeded && !isEditing && (
+                {subNeeded && editMode !== 'SUB' && (
                     <span className={styles.subNeeded}>
                         {subName ? `Sub: ${subName}` : 'Sub needed'}
                     </span>
                 )}
-                {noShow && !isEditing && (
+                {noShow && editMode !== 'SUB' && editMode !== 'SCORE' && (
                     <span className={styles.subNeeded}>
                         No Show
                     </span>
                 )}
 
                 {/* Edit Controls */}
-                {isEditing && (
-                    <div style={{ marginTop: '4px' }}>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <label className={styles.subLabel} style={{ marginLeft: 0, cursor: 'pointer' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={subNeeded}
-                                    onChange={handleSubToggle}
-                                    style={{ marginRight: '4px' }}
-                                />
-                                Sub needed
-                            </label>
-
-                            <label className={styles.subLabel} style={{ marginLeft: 0, cursor: 'pointer' }}>
-                                <input
-                                    type="checkbox"
-                                    checked={noShow}
-                                    onChange={handleNoShowToggle}
-                                    style={{ marginRight: '4px' }}
-                                />
-                                No Show
-                            </label>
-                        </div>
-
-                        {subNeeded && (
-                            <div className={styles.subInputGroup}>
-                                <div style={{ flex: 1 }}>
+                {editMode === 'SUB' && (
+                    <div style={{ marginTop: '8px' }}>
+                        {!subNeeded ? (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); handleSubToggle(); }}
+                                style={{ padding: '4px 10px', fontSize: '0.8rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', color: '#334155' }}
+                            >
+                                + Add Sub
+                            </button>
+                        ) : (
+                            <div className={styles.subInputGroup} style={{ background: '#f8fafc', padding: '8px', borderRadius: '6px', border: '1px solid #e2e8f0', marginTop: '4px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center' }}>
+                                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#475569' }}>Sub Details</span>
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); handleSubToggle(); }}
+                                        style={{ padding: '2px 8px', fontSize: '0.75rem', backgroundColor: '#fee2e2', color: '#ef4444', border: '1px solid #fecaca', borderRadius: '4px', cursor: 'pointer' }}
+                                    >
+                                        Remove Sub
+                                    </button>
+                                </div>
+                                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                     <input
                                         list="sub-options"
                                         className={styles.subTextInput}
@@ -243,33 +276,51 @@ function PlayerRow({ member, score, week, groupId, isEditing, onUpdate, showArro
                                         value={subName}
                                         onChange={(e) => setSubName(e.target.value)}
                                         onBlur={handleSubInfoBlur}
-                                        style={{ width: '100%' }}
+                                        onClick={e => e.stopPropagation()}
+                                        style={{ width: '100%', boxSizing: 'border-box' }}
                                     />
                                     <datalist id="sub-options">
                                         {allUsers.map(u => (
                                             <option key={u.id} value={u.name} />
                                         ))}
                                     </datalist>
+                                    <input
+                                        className={styles.subTextInput}
+                                        placeholder="Phone"
+                                        value={subContact}
+                                        onChange={(e) => setSubContact(e.target.value)}
+                                        onBlur={handleSubInfoBlur}
+                                        onClick={e => e.stopPropagation()}
+                                        style={{ width: '100%', boxSizing: 'border-box' }}
+                                    />
                                 </div>
-                                <input
-                                    className={styles.subTextInput}
-                                    placeholder="Phone"
-                                    value={subContact}
-                                    onChange={(e) => setSubContact(e.target.value)}
-                                    onBlur={handleSubInfoBlur}
-                                />
                             </div>
                         )}
+                    </div>
+                )}
+
+                {editMode === 'SCORE' && (
+                    <div style={{ marginTop: '6px' }} onClick={e => e.stopPropagation()}>
+                        <label className={styles.subLabel} style={{ marginLeft: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}>
+                            <input
+                                type="checkbox"
+                                checked={noShow}
+                                onChange={handleNoShowToggle}
+                                style={{ marginRight: '6px' }}
+                            />
+                            Mark as No Show
+                        </label>
                     </div>
                 )}
             </div>
 
             <div className={styles.scoreCell}>
-                {isEditing ? (
+                {editMode === 'SCORE' ? (
                     <select
                         className={styles.scoreInput}
                         value={gamesWon ?? ''}
                         onChange={handleScoreChange}
+                        onClick={e => e.stopPropagation()}
                         disabled={noShow}
                     >
                         <option value="">-</option>
