@@ -138,7 +138,7 @@ export async function POST(req) {
                             groupId: group.id,
                             userId: p.id,
                             week: r,
-                            gamesWon: 0,
+                            gamesWon: null,
                             subNeeded: false
                         })
                     }
