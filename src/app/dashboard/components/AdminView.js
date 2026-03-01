@@ -125,7 +125,7 @@ export default function AdminView({ user, leagues, stats, analytics }) {
 
             <div className={styles.sectionHeader} style={{ marginTop: '2rem' }}>
                 <h2 className={styles.title}>League Analytics</h2>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                     <button
                         className={styles.actionButton}
                         style={{ background: '#34495e' }}
@@ -135,6 +135,12 @@ export default function AdminView({ user, leagues, stats, analytics }) {
                     </button>
                     <Link href="/admin/players" className={styles.actionButton} style={{ background: '#27ae60' }}>
                         Manage All Players
+                    </Link>
+                    <Link href="/admin/coaches" className={styles.actionButton} style={{ background: '#8e44ad' }}>
+                        Manage Coaches
+                    </Link>
+                    <Link href="/admin/coaching" className={styles.actionButton} style={{ background: '#9b59b6' }}>
+                        Coaching Schedule
                     </Link>
                 </div>
             </div>

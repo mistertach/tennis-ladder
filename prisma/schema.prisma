@@ -78,6 +78,7 @@ model User {
   matchesAsPlayer2     Match[]       @relation("Player2")
   substitutionRequests SubstitutionRequest[]
   weeklyScores         WeeklyScore[]
+  coachingSessions     SessionStudent[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -199,4 +200,48 @@ model WeeklyScore {
   updatedAt DateTime @updatedAt
 
   @@unique([groupId, userId, week])
+}
+
+// ==========================================
+// Coaching Management
+// ==========================================
+
+model Coach {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  bio       String?  @db.Text
+  
+  sessions  CoachingSession[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CoachingSession {
+  id          String   @id @default(cuid())
+  coachId     String
+  coach       Coach    @relation(fields: [coachId], references: [id])
+  
+  date        DateTime // Start date and time
+  durationMin Int      @default(60) // Classes last for an hour
+  
+  price       Float    // The fee charged for this session 
+  recurringId String?  // An identifier to group recurring sessions together
+  
+  students    SessionStudent[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SessionStudent {
+  id        String          @id @default(cuid())
+  sessionId String
+  session   CoachingSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([sessionId, userId])
 }

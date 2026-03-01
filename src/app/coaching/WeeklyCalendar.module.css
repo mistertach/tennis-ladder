@@ -1,0 +1,168 @@
+.calendarContainer {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    overflow-x: auto;
+}
+
+.calendarHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.navButton {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.navButton:hover {
+    background-color: #e2e8f0;
+}
+
+.currentWeek {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #0f172a;
+}
+
+.grid {
+    display: grid;
+    /* 1 col for time, 5 cols for days */
+    grid-template-columns: 80px repeat(5, minmax(180px, 1fr));
+    border-top: 1px solid #e2e8f0;
+    border-left: 1px solid #e2e8f0;
+    min-width: 1000px;
+}
+
+.cell {
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.5rem;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.headerCell {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #334155;
+    text-align: center;
+    padding: 1rem 0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.timeCell {
+    background-color: #f8fafc;
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+    text-align: right;
+    padding-right: 0.75rem;
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: 0.5rem;
+}
+
+.emptySlot {
+    flex: 1;
+    border: 2px dashed transparent;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: transparent;
+    font-size: 0.8rem;
+}
+
+.clickableSlot {
+    cursor: pointer;
+}
+
+.clickableSlot:hover {
+    border-color: #3b82f6 !important;
+    background-color: #eff6ff;
+    color: #3b82f6 !important;
+}
+
+.grid:hover .emptySlot:not(.clickableSlot):hover {
+    border-color: #cbd5e1;
+    color: #94a3b8;
+    cursor: default;
+}
+
+.addSessionBtn {
+    background: none;
+    border: 1px dashed #cbd5e1;
+    color: #64748b;
+    border-radius: 4px;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    margin-top: 0.25rem;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.addSessionBtn:hover {
+    background-color: #f1f5f9;
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.sessionCard {
+    background-color: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    font-size: 0.85rem;
+}
+
+.sessionCard.full {
+    background-color: #f0fdf4;
+    border-left-color: #22c55e;
+}
+
+.sessionTime {
+    font-weight: bold;
+    color: #1e3a8a;
+    margin-bottom: 0.25rem;
+}
+
+.coachName {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+.studentsList {
+    color: #475569;
+    line-height: 1.2;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    color: #64748b;
+    font-size: 1.1rem;
+}

@@ -10,8 +10,9 @@ export default function Navbar() {
     return (
         <nav className={styles.navbar}>
             <div className={styles.container}>
-                <div className={styles.logo}>
+                <div className={styles.logo} style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                     <Link href="/">Tennis League</Link>
+                    <Link href="/coaching" style={{ fontSize: '1rem', fontWeight: 'normal', color: 'var(--text-color)' }}>Coaching</Link>
                 </div>
                 <div className={styles.links}>
                     {session ? (
